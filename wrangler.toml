@@ -1,0 +1,26 @@
+name = "mailg"
+account_id = ""
+workers_dev = true
+route = ""
+
+# Pages configuration
+pages_build_output_dir = "dist"
+
+
+[[d1_databases]]
+binding = "DB"
+database_name = "analytics"
+database_id = "9b8667e8-07ae-4d1c-96ae-205093312247"
+
+[[r2_buckets]]
+binding = "ATTACHMENTS"
+bucket_name = "misc"
+
+[vars]
+MAILGUN_DOMAIN = "dipankarshaw.qzz.io"
+
+[assets]
+not_found_handling = "single-page-application"
+
+[observability]
+enabled = true
