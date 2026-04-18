@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import clsx from 'clsx';
+import { Settings as SettingsIcon, User, Palette, Bell, Lock, Camera } from 'lucide-react';
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('account');
 
   const tabs = [
-    { id: 'account', label: 'Account', icon: 'solar:user-circle-linear' },
-    { id: 'appearance', label: 'Appearance', icon: 'solar:palette-linear' },
-    { id: 'notifications', label: 'Notifications', icon: 'solar:bell-linear' },
-    { id: 'security', label: 'Security', icon: 'solar:lock-password-linear' },
+    { id: 'account', label: 'Account', icon: User },
+    { id: 'appearance', label: 'Appearance', icon: Palette },
+    { id: 'notifications', label: 'Notifications', icon: Bell },
+    { id: 'security', label: 'Security', icon: Lock },
   ];
 
   return (
@@ -16,7 +17,7 @@ export default function Settings() {
       {/* Settings Header */}
       <div className="px-8 py-6 border-b border-white/[0.04] flex-shrink-0 bg-neutral-900/20">
         <h1 className="text-2xl font-medium tracking-tight text-white flex items-center gap-3">
-          <iconify-icon icon="solar:settings-bold-duotone" style={{ fontSize: '28px' }} className="text-neutral-400" />
+          <SettingsIcon size={28} className="text-neutral-400" />
           Settings
         </h1>
         <p className="text-neutral-500 text-sm mt-1 ml-[40px]">Manage your account preferences and app configurations.</p>
@@ -37,10 +38,7 @@ export default function Settings() {
                   : "text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200"
               )}
             >
-              <iconify-icon
-                icon={activeTab === tab.id ? tab.icon.replace('-linear', '-bold') : tab.icon}
-                style={{ fontSize: '20px' }}
-              />
+              <tab.icon size={20} />
               {tab.label}
             </button>
           ))}
@@ -71,7 +69,7 @@ function AccountSettings() {
               JD
             </div>
             <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity backdrop-blur-sm">
-              <iconify-icon icon="solar:camera-add-linear" style={{ fontSize: '24px', color: 'white' }} />
+              <Camera size={24} className="text-white" />
             </div>
           </div>
           <div className="flex-1">

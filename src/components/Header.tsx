@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useMail } from '../context/MailContext';
+import { Search, Settings, Bell } from 'lucide-react';
 
 export default function Header() {
   const { searchQuery, setSearchQuery } = useMail();
@@ -11,7 +12,7 @@ export default function Header() {
       {/* Search Bar */}
       <div className="flex-1 max-w-2xl relative group">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-500 group-focus-within:text-white transition-colors duration-300">
-          <iconify-icon icon="solar:magnifer-linear" style={{ fontSize: '18px' }} />
+          <Search size={18} />
         </div>
         <input
           type="text"
@@ -53,6 +54,11 @@ interface IconButtonProps {
 }
 
 function IconButton({ icon, label, badge, onClick }: IconButtonProps) {
+  const iconMap: { [key: string]: React.ReactNode } = {
+    'solar:settings-linear': <Settings size={22} />,
+    'solar:bell-linear': <Bell size={22} />,
+  };
+
   return (
     <button
       onClick={onClick}
@@ -60,7 +66,9 @@ function IconButton({ icon, label, badge, onClick }: IconButtonProps) {
       aria-label={label}
       title={label}
     >
-      <iconify-icon icon={icon} style={{ fontSize: '22px' }} className="transition-transform group-hover:rotate-12 duration-300" />
+      <div className="transition-transform group-hover:rotate-12 duration-300">
+        {iconMap[icon]}
+      </div>
       {badge && (
         <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-500 border-2 border-neutral-950"></span>
       )}

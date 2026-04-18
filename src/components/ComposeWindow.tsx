@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useMail } from '../context/MailContext';
 import clsx from 'clsx';
+import { Maximize2, Minimize2, X, Send, Type, Link, Image, Smile } from 'lucide-react';
 
 export default function ComposeWindow() {
   const { composeState, closeCompose, toggleMinimizeCompose } = useMail();
@@ -43,13 +44,13 @@ export default function ComposeWindow() {
             onClick={(e) => { e.stopPropagation(); toggleMinimizeCompose(); }}
             className="p-1.5 text-neutral-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
           >
-            <iconify-icon icon={isMinimized ? "solar:maximize-linear" : "solar:minimize-linear"} style={{ fontSize: '16px' }} />
+            {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); closeCompose(); }}
             className="p-1.5 text-neutral-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
           >
-            <iconify-icon icon="solar:close-circle-linear" style={{ fontSize: '16px' }} />
+            <X size={16} />
           </button>
         </div>
       </div>
@@ -93,17 +94,17 @@ export default function ComposeWindow() {
             isFocused && "bg-neutral-800/50"
           )}>
             <div className="flex items-center gap-1">
-              <IconButton icon="solar:text-bold-linear" />
-              <IconButton icon="solar:link-linear" />
-              <IconButton icon="solar:gallery-wide-linear" />
-              <IconButton icon="solar:smile-circle-linear" />
+              <IconButton icon={Type} />
+              <IconButton icon={Link} />
+              <IconButton icon={Image} />
+              <IconButton icon={Smile} />
             </div>
             <button
               type="submit"
               className="px-5 py-2 bg-white text-neutral-950 text-sm font-medium rounded-lg hover:bg-neutral-200 active:scale-95 transition-all duration-200 flex items-center gap-2"
             >
               Send
-              <iconify-icon icon="solar:plain-2-linear" style={{ fontSize: '16px' }} />
+              <Send size={16} />
             </button>
           </div>
         </form>
@@ -112,10 +113,11 @@ export default function ComposeWindow() {
   );
 }
 
-function IconButton({ icon }: { icon: string }) {
+function IconButton({ icon }: { icon: React.ComponentType<{ size: number }> }) {
+  const Icon = icon;
   return (
     <button type="button" className="p-2 text-neutral-400 hover:text-white hover:bg-white/10 rounded-md transition-colors active:scale-95">
-      <iconify-icon icon={icon} style={{ fontSize: '18px' }} />
+      <Icon size={18} />
     </button>
   );
 }

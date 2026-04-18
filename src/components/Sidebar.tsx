@@ -1,17 +1,18 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useMail } from '../context/MailContext';
 import clsx from 'clsx';
+import { Mail, PenSquare, Inbox, Star, FileText, Trash2, ChevronDown, Send } from 'lucide-react';
 
 export default function Sidebar() {
   const { openCompose, getUnreadCount } = useMail();
   const location = useLocation();
 
   const navItems = [
-    { icon: 'solar:inbox-linear', iconActive: 'solar:inbox-bold', label: 'Inbox', path: '/inbox', count: getUnreadCount('inbox') },
-    { icon: 'solar:star-linear', iconActive: 'solar:star-bold', label: 'Starred', path: '/starred' },
-    { icon: 'solar:plain-2-linear', iconActive: 'solar:plain-2-bold', label: 'Sent', path: '/sent' },
-    { icon: 'solar:file-text-linear', iconActive: 'solar:file-text-bold', label: 'Drafts', path: '/drafts', count: getUnreadCount('drafts') },
-    { icon: 'solar:trash-bin-trash-linear', iconActive: 'solar:trash-bin-trash-bold', label: 'Trash', path: '/trash' },
+    { icon: Inbox, iconActive: Inbox, label: 'Inbox', path: '/inbox', count: getUnreadCount('inbox') },
+    { icon: Star, iconActive: Star, label: 'Starred', path: '/starred' },
+    { icon: Send, iconActive: Send, label: 'Sent', path: '/sent' },
+    { icon: FileText, iconActive: FileText, label: 'Drafts', path: '/drafts', count: getUnreadCount('drafts') },
+    { icon: Trash2, iconActive: Trash2, label: 'Trash', path: '/trash' },
   ];
 
   return (
@@ -19,7 +20,7 @@ export default function Sidebar() {
       {/* Brand */}
       <div className="flex items-center gap-3 px-3 mb-8 cursor-pointer group">
         <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-neutral-700 to-neutral-900 flex items-center justify-center border border-white/10 group-hover:border-white/20 transition-all duration-300 shadow-lg">
-          <iconify-icon icon="solar:letter-bold" style={{ fontSize: '20px', color: '#e5e5e5' }} />
+          <Mail size={20} className="text-neutral-200" />
         </div>
         <span className="font-medium text-lg tracking-tight text-neutral-100 group-hover:text-white transition-colors">Mailbox</span>
       </div>
@@ -29,7 +30,7 @@ export default function Sidebar() {
         onClick={openCompose}
         className="mb-8 group relative w-full flex items-center gap-3 px-4 py-3 bg-neutral-100 text-neutral-950 rounded-xl font-medium hover:bg-white transition-all duration-300 active:scale-[0.98] shadow-[0_0_20px_rgba(255,255,255,0.05)]"
       >
-        <iconify-icon icon="solar:pen-new-square-linear" style={{ fontSize: '20px' }} className="transition-transform group-hover:scale-110 duration-300" />
+        <PenSquare size={20} className="transition-transform group-hover:scale-110 duration-300" />
         <span>Compose</span>
         {/* Subtle glow effect behind button */}
         <div className="absolute inset-0 -z-10 rounded-xl bg-white/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -51,10 +52,9 @@ export default function Sidebar() {
                   : "text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200"
               )}
             >
-              <div className="flex items-center gap-3 relative z-10">
-                <iconify-icon
-                  icon={isActive ? item.iconActive : item.icon}
-                  style={{ fontSize: '20px' }}
+            <div className="flex items-center gap-3 relative z-10">
+                <item.icon
+                  size={20}
                   className={clsx(
                     "transition-transform duration-300",
                     !isActive && "group-hover:scale-110"
@@ -88,7 +88,7 @@ export default function Sidebar() {
             JD
           </div>
           <span className="flex-1 text-left line-clamp-1">johndoe@example.com</span>
-          <iconify-icon icon="solar:alt-arrow-down-linear" style={{ fontSize: '16px' }} />
+          <ChevronDown size={16} />
         </button>
       </div>
     </div>

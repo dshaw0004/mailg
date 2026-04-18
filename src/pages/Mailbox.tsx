@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useMail } from '../context/MailContext';
 import clsx from 'clsx';
 import { formatDate } from '../utils/helpers';
+import { RotateCw, MoreHorizontal, Inbox, Star, MailOpen, Trash2 } from 'lucide-react';
 
 export default function Mailbox() {
   const { folder } = useParams();
@@ -56,10 +57,10 @@ export default function Mailbox() {
 
         <div className="flex items-center gap-2">
           <button className="p-1.5 text-neutral-400 hover:text-white hover:bg-white/5 rounded-md transition-colors">
-            <iconify-icon icon="solar:refresh-linear" style={{ fontSize: '18px' }} />
+            <RotateCw size={18} />
           </button>
           <button className="p-1.5 text-neutral-400 hover:text-white hover:bg-white/5 rounded-md transition-colors">
-            <iconify-icon icon="solar:menu-dots-linear" style={{ fontSize: '18px' }} />
+            <MoreHorizontal size={18} />
           </button>
         </div>
       </div>
@@ -68,7 +69,7 @@ export default function Mailbox() {
       <div className="flex-1 overflow-y-auto">
         {filteredEmails.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-neutral-500 gap-4">
-            <iconify-icon icon="solar:inbox-line-linear" style={{ fontSize: '48px' }} className="opacity-20" />
+            <Inbox size={48} className="opacity-20" />
             <p>Nothing to see here.</p>
           </div>
         ) : (
@@ -98,9 +99,9 @@ export default function Mailbox() {
                     email.isStarred ? "text-yellow-400" : "text-neutral-500 hover:text-neutral-300 opacity-50 group-hover:opacity-100"
                   )}
                 >
-                  <iconify-icon
-                    icon={email.isStarred ? "solar:star-bold" : "solar:star-linear"}
-                    style={{ fontSize: '18px' }}
+                  <Star
+                    size={18}
+                    fill={email.isStarred ? "currentColor" : "none"}
                   />
                 </button>
 
@@ -138,13 +139,13 @@ export default function Mailbox() {
                   {/* Hover Actions */}
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                     <ActionButton
-                      icon={email.isRead ? "solar:letter-unread-linear" : "solar:letter-opened-linear"}
+                      icon={email.isRead ? MailOpen : MailOpen}
                       tooltip={email.isRead ? "Mark unread" : "Mark read"}
                       onClick={(e) => { e.stopPropagation(); toggleRead(email.id); }}
                     />
                     {currentFolder !== 'trash' && (
                       <ActionButton
-                        icon="solar:trash-bin-trash-linear"
+                        icon={Trash2}
                         tooltip="Delete"
                         onClick={(e) => { e.stopPropagation(); deleteEmail(email.id); navigate(`/${currentFolder}`); }}
                       />
@@ -161,19 +162,19 @@ export default function Mailbox() {
 }
 
 interface ActionButtonProps {
-  icon: string;
+  icon: React.ComponentType<{ size: number }>;
   tooltip: string;
   onClick?: (e: React.MouseEvent) => void;
 }
 
-function ActionButton({ icon, tooltip, onClick }: ActionButtonProps) {
+function ActionButton({ icon: Icon, tooltip, onClick }: ActionButtonProps) {
   return (
     <button
       onClick={onClick}
       title={tooltip}
       className="w-8 h-8 rounded-full bg-neutral-800 hover:bg-neutral-700 text-neutral-300 flex items-center justify-center transition-all duration-200 shadow-lg border border-white/5 hover:border-white/10 active:scale-90"
     >
-      <iconify-icon icon={icon} style={{ fontSize: '16px' }} />
+      <Icon size={16} />
     </button>
   );
 }

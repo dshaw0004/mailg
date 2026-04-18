@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useMail } from '../context/MailContext';
 import { formatDate } from '../utils/helpers';
 import clsx from 'clsx';
+import { ArrowLeft, Archive, Info, Trash2, Mail, Clock, Star, Reply, MoreVertical, ChevronDown } from 'lucide-react';
 
 export default function MailDetail() {
   const { id } = useParams();
@@ -35,16 +36,16 @@ export default function MailDetail() {
             onClick={() => navigate(-1)}
             className="p-2 -ml-2 text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 active:scale-95 flex items-center gap-2"
           >
-            <iconify-icon icon="solar:arrow-left-linear" style={{ fontSize: '20px' }} />
+            <ArrowLeft size={20} />
             <span className="text-sm font-medium">Back</span>
           </button>
         </div>
 
         <div className="flex items-center gap-1">
-          <ToolbarButton icon="solar:archive-linear" tooltip="Archive" />
-          <ToolbarButton icon="solar:info-circle-linear" tooltip="Report Spam" />
+          <ToolbarButton icon={Archive} tooltip="Archive" />
+          <ToolbarButton icon={Info} tooltip="Report Spam" />
           <ToolbarButton
-            icon="solar:trash-bin-trash-linear"
+            icon={Trash2}
             tooltip="Delete"
             onClick={() => {
               deleteEmail(email.id);
@@ -53,7 +54,7 @@ export default function MailDetail() {
           />
           <div className="w-px h-5 bg-white/10 mx-2" />
           <ToolbarButton
-            icon="solar:letter-unread-linear"
+            icon={Mail}
             tooltip="Mark unread"
             onClick={() => {
               toggleRead(email.id);
@@ -61,7 +62,7 @@ export default function MailDetail() {
             }}
           />
           <ToolbarButton
-            icon="solar:clock-circle-linear"
+            icon={Clock}
             tooltip="Snooze"
           />
         </div>
@@ -97,7 +98,7 @@ export default function MailDetail() {
                 </div>
                 <div className="text-xs text-neutral-500 mt-0.5 flex items-center gap-1 cursor-pointer hover:text-neutral-300 transition-colors w-fit">
                   to me
-                  <iconify-icon icon="solar:alt-arrow-down-linear" />
+                  <ChevronDown size={12} />
                 </div>
               </div>
             </div>
@@ -109,13 +110,16 @@ export default function MailDetail() {
                   onClick={() => toggleStar(email.id)}
                   className={clsx("p-1.5 rounded-md hover:bg-white/5 transition-colors", email.isStarred ? "text-yellow-400" : "")}
                 >
-                  <iconify-icon icon={email.isStarred ? "solar:star-bold" : "solar:star-linear"} style={{ fontSize: '18px' }} />
+                  <Star
+                    size={18}
+                    fill={email.isStarred ? "currentColor" : "none"}
+                  />
                 </button>
                 <button className="p-1.5 rounded-md hover:bg-white/5 transition-colors">
-                  <iconify-icon icon="solar:reply-linear" style={{ fontSize: '18px' }} />
+                  <Reply size={18} />
                 </button>
                 <button className="p-1.5 rounded-md hover:bg-white/5 transition-colors">
-                  <iconify-icon icon="solar:menu-dots-vertical-linear" style={{ fontSize: '18px' }} />
+                  <MoreVertical size={18} />
                 </button>
               </div>
             </div>
@@ -139,19 +143,19 @@ export default function MailDetail() {
 }
 
 interface ToolbarButtonProps {
-  icon: string;
+  icon: React.ComponentType<{ size: number }>;
   tooltip: string;
   onClick?: () => void;
 }
 
-function ToolbarButton({ icon, tooltip, onClick }: ToolbarButtonProps) {
+function ToolbarButton({ icon: Icon, tooltip, onClick }: ToolbarButtonProps) {
   return (
     <button
       onClick={onClick}
       title={tooltip}
       className="p-2 text-neutral-400 hover:text-white hover:bg-white/[0.08] rounded-lg transition-all duration-200 active:scale-95"
     >
-      <iconify-icon icon={icon} style={{ fontSize: '18px' }} />
+      <Icon size={18} />
     </button>
   );
 }
