@@ -1,7 +1,4 @@
 name = "mailg"
-account_id = ""
-workers_dev = true
-route = ""
 
 # Pages configuration
 pages_build_output_dir = "dist"
@@ -19,8 +16,9 @@ bucket_name = "misc"
 [vars]
 MAILGUN_DOMAIN = "dipankarshaw.qzz.io"
 
-[assets]
-not_found_handling = "single-page-application"
+[env.production.routes]
+pattern = "*"
+zone_name = "dipankarshaw.qzz.io"
 
 [observability]
 enabled = true
