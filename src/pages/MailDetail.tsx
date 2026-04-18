@@ -1,23 +1,60 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useMail } from '../context/MailContext';
+import { useMail, type EmailDetail, type Attachment } from '../context/MailContext'; // Import EmailDetail and Attachment
 import { formatDate } from '../utils/helpers';
 import clsx from 'clsx';
-import { ArrowLeft, Archive, Info, Trash2, Mail, Clock, Star, Reply, MoreVertical, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Archive, Info, Trash2, Mail, Clock, Star, Reply, MoreVertical, ChevronDown, Paperclip } from 'lucide-react';
 
 export default function MailDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { emails, toggleRead, toggleStar, deleteEmail } = useMail();
+  const { toggleRead, toggleStar, deleteEmail, fetchEmailById } = useMail();
 
-  const email = emails.find(e => e.id === id);
+  const [email, setEmail] = useState<EmailDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Auto-mark as read when opening
-    if (email && !email.isRead) {
-      toggleRead(id!);
-    }
-  }, [id, email, toggleRead]);
+    const getEmailDetail = async () => {
+      if (!id) return;
+      setIsLoading(true);
+      setError(null);
+      try {
+        const fetchedEmail = await fetchEmailById(id);
+        if (fetchedEmail) {
+          setEmail(fetchedEmail);
+          // Auto-mark as read when opening
+          if (!fetchedEmail.isRead) {
+            toggleRead(id);
+          }
+        } else {
+          setError("Message not found.");
+        }
+      } catch (err) {
+        setError("Failed to load email.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getEmailDetail();
+  }, [id, fetchEmailById, toggleRead]);
+
+  if (isLoading) {
+    return (
+      <div className="h-full flex items-center justify-center text-neutral-400">
+        Loading message...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-full flex items-center justify-center text-red-400">
+        {error}
+      </div>
+    );
+  }
 
   if (!email) {
     return (
@@ -126,9 +163,23 @@ export default function MailDetail() {
           </div>
 
           {/* Body content */}
-          <div className="text-neutral-300 text-sm leading-relaxed whitespace-pre-wrap font-sans">
-            {email.body}
+          <div className="text-neutral-300 text-sm leading-relaxed whitespace-pre-wrap font-sans" dangerouslySetInnerHTML={{ __html: email.body }}>
           </div>
+
+          {/* Attachments */}
+          {email.attachments && email.attachments.length > 0 && (
+            <div className="mt-8 pt-6 border-t border-white/[0.04]">
+              <h3 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
+                <Paperclip size={20} className="text-neutral-400" />
+                Attachments ({email.attachments.length})
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {email.attachments.map((attachment) => (
+                  <AttachmentCard key={attachment.id} attachment={attachment} emailId={email.id} />
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Reply Box (Fake) */}
           <div className="mt-12 p-4 border border-white/[0.08] rounded-xl bg-neutral-900/30 flex gap-4 text-neutral-500 text-sm cursor-text hover:bg-neutral-900/50 hover:border-white/20 transition-all duration-300">
@@ -157,5 +208,29 @@ function ToolbarButton({ icon: Icon, tooltip, onClick }: ToolbarButtonProps) {
     >
       <Icon size={18} />
     </button>
+  );
+}
+
+interface AttachmentCardProps {
+  attachment: Attachment;
+  emailId: string;
+}
+
+function AttachmentCard({ attachment, emailId }: AttachmentCardProps) {
+  const downloadAttachment = () => {
+    // Construct the URL for the attachment API
+    const attachmentUrl = `/api/attachments/${encodeURIComponent(emailId)}/${encodeURIComponent(attachment.filename)}`;
+    window.open(attachmentUrl, '_blank');
+  };
+
+  return (
+    <div className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer" onClick={downloadAttachment}>
+      <Paperclip size={20} className="text-neutral-400 flex-shrink-0" />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm text-white truncate">{attachment.filename}</p>
+        <p className="text-xs text-neutral-500">{Math.round(attachment.size / 1024)} KB</p>
+      </div>
+      {/* Optionally add a download icon */}
+    </div>
   );
 }

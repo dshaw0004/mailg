@@ -142,7 +142,7 @@ const handleWebhook: PagesFunction<Env> = async (context) => {
   const attachmentRecords: Array<{ key: string; name: string; type: string; size: number }> = [];
 
   for (const att of attachments) {
-    const key = `${messageId.replace(/[<>]/g, "")}/${att.name}`;
+    const key = `/mailg/${messageId.replace(/[<>]/g, "")}/${att.name}`;
     try {
       await env.ATTACHMENTS.put(key, att.data, {
         httpMetadata: { contentType: att.type },

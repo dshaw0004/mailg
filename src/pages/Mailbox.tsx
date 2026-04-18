@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useMail } from '../context/MailContext';
+import { useMail, type EmailItem } from '../context/MailContext';
 import clsx from 'clsx';
 import { formatDate } from '../utils/helpers';
 import { RotateCw, MoreHorizontal, Inbox, Star, MailOpen, Trash2 } from 'lucide-react';
@@ -8,9 +8,13 @@ import { RotateCw, MoreHorizontal, Inbox, Star, MailOpen, Trash2 } from 'lucide-
 export default function Mailbox() {
   const { folder } = useParams();
   const navigate = useNavigate();
-  const { emails, searchQuery, toggleStar, toggleRead, deleteEmail } = useMail();
+  const { emails, searchQuery, toggleStar, toggleRead, deleteEmail, fetchEmails } = useMail() as { emails: EmailItem[], searchQuery: string, toggleStar: (id: string) => void, toggleRead: (id: string) => void, deleteEmail: (id: string) => void, fetchEmails: () => Promise<void> };
 
   const currentFolder = folder || 'inbox';
+
+  useEffect(() => {
+    fetchEmails(); // Fetch emails on mount and whenever needed
+  }, [fetchEmails]);
 
   const filteredEmails = useMemo(() => {
     let filtered = emails;
@@ -56,7 +60,10 @@ export default function Mailbox() {
         </h1>
 
         <div className="flex items-center gap-2">
-          <button className="p-1.5 text-neutral-400 hover:text-white hover:bg-white/5 rounded-md transition-colors">
+          <button
+            onClick={fetchEmails} // Refresh emails
+            className="p-1.5 text-neutral-400 hover:text-white hover:bg-white/5 rounded-md transition-colors"
+          >
             <RotateCw size={18} />
           </button>
           <button className="p-1.5 text-neutral-400 hover:text-white hover:bg-white/5 rounded-md transition-colors">
@@ -139,7 +146,7 @@ export default function Mailbox() {
                   {/* Hover Actions */}
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                     <ActionButton
-                      icon={email.isRead ? MailOpen : MailOpen}
+                      icon={MailOpen} // Use MailOpen for both read/unread
                       tooltip={email.isRead ? "Mark unread" : "Mark read"}
                       onClick={(e) => { e.stopPropagation(); toggleRead(email.id); }}
                     />
