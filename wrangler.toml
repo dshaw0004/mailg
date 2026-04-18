@@ -3,22 +3,17 @@ name = "mailg"
 # Pages configuration
 pages_build_output_dir = "dist"
 
-[observability]
-enabled = true
-
-[env.production]
-routes = [
-  { pattern = "*", zone_name = "dipankarshaw.qzz.io" }
-]
-
-[env.production.vars]
+[vars]
 MAILGUN_DOMAIN = "dipankarshaw.qzz.io"
 
-[[env.production.d1_databases]]
+[[d1_databases]]
 binding = "DB"
 database_name = "analytics"
 database_id = "9b8667e8-07ae-4d1c-96ae-205093312247"
 
-[[env.production.r2_buckets]]
+[[r2_buckets]]
 binding = "ATTACHMENTS"
 bucket_name = "misc"
+
+[observability]
+enabled = true
